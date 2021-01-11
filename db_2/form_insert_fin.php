@@ -1,4 +1,3 @@
-  
 <?php
 
 /*
@@ -7,6 +6,8 @@
 
 // ユーザ入力情報の取得
 // --------------------------------------
+// バッファリング
+ob_start();
 
 // ユーザ入力情報を保持する配列を準備する
 $user_input_data = array();
@@ -61,5 +62,14 @@ if (false === checkdate($user_input_data['birthday_mm'], $user_input_data['birth
     $error_flg = true;
 }
 
+// エラーが出た時、入力ページに遷移する
+if(true === $error_flg){
+    header('Location: ./form_insert.php');
+    exit;
+}
+
 // 確認
-var_dump($error_flg);
+// var_dump($error_flg);
+
+// ダミーのOK
+echo 'OK';
