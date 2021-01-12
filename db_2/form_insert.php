@@ -24,10 +24,13 @@ unset($_SESSION['output_buffer']);
 <head>
   <meta charset="UTF-8">
   <title>DB講座中級</title>
+  <style type="text/css">
+    .error { color: red; }
+  </style>
 </head>
 <body>
   <form action="./form_insert_fin.php" method="post">
-  
+
   <?php if ( (isset($view_data['error_must_name']))&&(true === $view_data['error_must_name']) ) : ?>
     <span class="error">名前が未入力です<br></span>
   <?php endif; ?>
