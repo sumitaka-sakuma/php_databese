@@ -1,14 +1,12 @@
 <?php
-
 /*
  * ユーザからのform情報の取得とDBへのINSERT
  */
 
-// ユーザ入力情報の取得
-// --------------------------------------
+/* ユーザ入力情報の取得 */
+
 // バッファリング
 ob_start();
-
 // セッションの開始
 session_start();
 
@@ -21,12 +19,10 @@ $params = array('name', 'post', 'address', 'birthday_yy', 'birthday_mm', 'birthd
 foreach($params as $p) {
     $user_input_data[$p] = (string)@$_POST[$p];
 }
-// 確認
-//var_dump($user_input_data);
 
-// ユーザ入力のvalidate
-// --------------------------------------
-//
+/* ユーザ入力のvalidate */
+
+// エラーフラグ
 $error_flg = false;
 // エラーの詳細を入れる配列
 $error_detail = array();
@@ -42,6 +38,7 @@ foreach($validate_params as $p) {
         $error_detail["error_must_{$p}"] = true;
     }
 }
+
 // 型チェックを実装
 // 郵便番号
 /*
@@ -63,8 +60,8 @@ if (1 !== preg_match('/\A[0-9]{3}[- ]?[0-9]{4}\z/', $user_input_data['post'])) {
 $int_params = array('birthday_yy', 'birthday_mm', 'birthday_dd');
 foreach($int_params as $p) {
     $user_input_data[$p] = intval($user_input_data[$p]);
-    //$user_input_data[$p] = (int)$user_input_data[$p]; // こちらの書き方でもよい
 }
+
 // PHPの標準関数を使って日付の妥当性をチェックする
 if (false === checkdate($user_input_data['birthday_mm'], $user_input_data['birthday_dd'], $user_input_data['birthday_yy'])) {
     // エラーフラグを立てる
@@ -81,9 +78,6 @@ if(true === $error_flg){
     header('Location: ./form_insert.php');
     exit;
 }
-
-// 確認
-// var_dump($error_flg);
 
 // ダミーのOK
 echo 'OK';

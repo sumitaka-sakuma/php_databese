@@ -3,16 +3,11 @@
 ob_start();
 session_start();
 
-// セッションに入っている情報を確認する
-//var_dump($_SESSION);
-
 // セッション内に「エラー情報のフラグ」が入っていたら取り出す
 $view_data = array();
 if (true === isset($_SESSION['output_buffer'])) {
     $view_data = $_SESSION['output_buffer'];
 }
-// 確認
-//var_dump($view_data);
 
 // (二重に出力しないように)セッション内の「出力用情報」を削除する
 unset($_SESSION['output_buffer']);
