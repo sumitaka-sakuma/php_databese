@@ -9,6 +9,9 @@
 // バッファリング
 ob_start();
 
+// セッションの開始
+session_start();
+
 // ユーザ入力情報を保持する配列を準備する
 $user_input_data = array();
 
@@ -25,6 +28,8 @@ foreach($params as $p) {
 // --------------------------------------
 //
 $error_flg = false;
+// エラーの詳細を入れる配列
+$error_detail = array();
 
 // 必須チェックを実装
 $validate_params = array('name', 'post', 'address', 'birthday_yy', 'birthday_mm', 'birthday_dd');
@@ -33,6 +38,8 @@ foreach($validate_params as $p) {
     if ('' === $user_input_data[$p]) {
         // エラーフラグを立てる
         $error_flg = true;
+        // 必須入力のみ入力エラー
+        $error_detail["error_must_{$p}"] = true;
     }
 }
 // 型チェックを実装
@@ -47,6 +54,8 @@ foreach($validate_params as $p) {
 if (1 !== preg_match('/\A[0-9]{3}[- ]?[0-9]{4}\z/', $user_input_data['post'])) {
     // エラーフラグを立てる
     $error_flg = true;
+    // 郵便番号のフォーマットエラー
+    $error_detail["error_format_post"] = true;
 }
 
 // 誕生日
@@ -60,10 +69,15 @@ foreach($int_params as $p) {
 if (false === checkdate($user_input_data['birthday_mm'], $user_input_data['birthday_dd'], $user_input_data['birthday_yy'])) {
     // エラーフラグを立てる
     $error_flg = true;
+    // 誕生日のフォーマットエラー
+    $error_detail["error_format_birthday"] = true;
 }
 
 // エラーが出た時、入力ページに遷移する
 if(true === $error_flg){
+
+    // エラー情報をセッションに入れて持ち回る
+    $_SESSION['output_buffer'] = $error_detail;
     header('Location: ./form_insert.php');
     exit;
 }
