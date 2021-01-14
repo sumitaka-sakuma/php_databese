@@ -14,18 +14,11 @@ session_start();
 // 共通関数のinclude
 require_once('common_function.php');
 
+// 日付関数(date)を使うのでタイムゾーンの設定
+date_default_timezone_set('Asia/Tokyo');
+
 // ユーザ入力情報を保持する配列を準備する
 $user_input_data = array();
-
-/*
-// データを取得する
-$user_input_data['name'] = (string)@$_POST['name'];
-$user_input_data['post'] = (string)@$_POST['post'];
-$user_input_data['address'] = (string)@$_POST['address'];
-$user_input_data['birthday_yy'] = (string)@$_POST['birthday_yy'];
-$user_input_data['birthday_mm'] = (string)@$_POST['birthday_mm'];
-$user_input_data['birthday_dd'] = (string)@$_POST['birthday_dd'];
-*/
 
 // 「パラメタの一覧」を把握
 $params = array('name', 'post', 'address', 'birthday_yy', 'birthday_mm', 'birthday_dd');
@@ -33,8 +26,6 @@ $params = array('name', 'post', 'address', 'birthday_yy', 'birthday_mm', 'birthd
 foreach($params as $p) {
     $user_input_data[$p] = (string)@$_POST[$p];
 }
-// 確認
-//var_dump($user_input_data);
 
 // ユーザ入力のvalidate
 // --------------------------------------
@@ -107,6 +98,34 @@ if (true === $error_flg) {
     // 入力ページに遷移する
     header('Location: ./form_insert.php');
     exit;
+}
+
+// DBハンドルの取得
+$dbh = get_dbh();
+
+// INSERT文の作成と発行
+// ------------------------------
+// 準備された文(プリペアドステートメント)の用意
+$sql = 'INSERT INTO test_form(name, post, address, birthday, created, updated)
+             VALUES (:name, :post, :address, :birthday, :created, :updated);';
+$pre = $dbh->prepare($sql);
+
+// 値のバインド
+$pre->bindValue(':name', $user_input_data['name'], PDO::PARAM_STR);
+$pre->bindValue(':post', $user_input_data['post'], PDO::PARAM_STR);
+$pre->bindValue(':address', $user_input_data['address'], PDO::PARAM_STR);
+//
+$birthday = "{$user_input_data['birthday_yy']}-{$user_input_data['birthday_mm']}-{$user_input_data['birthday_dd']}";
+$pre->bindValue(':birthday', $birthday, PDO::PARAM_STR);
+$pre->bindValue(':created', date(DATE_ATOM), PDO::PARAM_STR);
+$pre->bindValue(':updated', date(DATE_ATOM), PDO::PARAM_STR);
+
+// SQLの実行
+$r = $pre->execute();
+if (false === $r) {
+        // XXX 本当はもう少し丁寧なエラーページを出力する
+        echo 'システムでエラーが起きました';
+        exit;
 }
 
 // ダミーのOK：後で削除する
