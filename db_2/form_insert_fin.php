@@ -75,6 +75,9 @@ if(true === $error_flg){
 
     // エラー情報をセッションに入れて持ち回る
     $_SESSION['output_buffer'] = $error_detail;
+    // 入力値をセッションに入れて持ち回る
+    $_SESSION['output_buffer'] = $user_input_data;
+    
     header('Location: ./form_insert.php');
     exit;
 }
