@@ -3,6 +3,9 @@
 ob_start();
 session_start();
 
+// 共通関数のinclude
+require_once('common_function.php');
+
 // セッション内に「エラー情報のフラグ」が入っていたら取り出す
 $view_data = array();
 if (true === isset($_SESSION['output_buffer'])) {
@@ -29,7 +32,7 @@ unset($_SESSION['output_buffer']);
   <?php if ( (isset($view_data['error_must_name']))&&(true === $view_data['error_must_name']) ) : ?>
     <span class="error">名前が未入力です<br></span>
   <?php endif; ?>
-    名前：<input type="text" name="name" value=""><br>
+    名前：<input type="text" name="name" value="<?php echo h(@$view_data['name']); ?>"><br>
 
   <?php if ( (isset($view_data['error_must_post']))&&(true === $view_data['error_must_post']) ) : ?>
     <span class="error">郵便番号が未入力です<br></span>
@@ -37,12 +40,12 @@ unset($_SESSION['output_buffer']);
   <?php if ( (isset($view_data['error_format_post']))&&(true === $view_data['error_format_post']) ) : ?>
     <span class="error">郵便番号の書式に誤りがあります<br></span>
   <?php endif; ?>
-    郵便番号(例：999-9999)：<input type="text" name="post" value=""><br>
+    郵便番号(例：999-9999)：<input type="text" name="post" value="<?php echo h(@$view_data['post']); ?>"><br>
 
   <?php if ( (isset($view_data['error_must_address']))&&(true === $view_data['error_must_address']) ) : ?>
     <span class="error">住所が未入力です<br></span>
   <?php endif; ?>
-    住所：<input type="text" name="address" value=""><br>
+    住所：<input type="text" name="address" value="<?php echo h(@$view_data['address']); ?>"><br>
 
   <?php if ( (isset($view_data['error_must_birthday_yy']))&&(true === $view_data['error_must_birthday_yy']) ) : ?>
     <span class="error">誕生日(年)が未入力です<br></span>
@@ -56,7 +59,10 @@ unset($_SESSION['output_buffer']);
   <?php if ( (isset($view_data['error_format_birthday']))&&(true === $view_data['error_format_birthday']) ) : ?>
     <span class="error">誕生日の書式に誤りがあります<br></span>
   <?php endif; ?>
-    誕生日：西暦<input type="text" name="birthday_yy" value="">年<input type="text" name="birthday_mm" value="">月<input type="text" name="birthday_dd" value="">日<br>
+    誕生日：西暦
+    <input type="text" name="birthday_yy" value="<?php echo h_digit(@$view_data['birthday_yy']); ?>">年
+    <input type="text" name="birthday_mm" value="<?php echo h_digit(@$view_data['birthday_mm']); ?>">月
+    <input type="text" name="birthday_dd" value="<?php echo h_digit(@$view_data['birthday_dd']); ?>">日<br>
     <br>
 
     <button type="submit">データ登録</button>
