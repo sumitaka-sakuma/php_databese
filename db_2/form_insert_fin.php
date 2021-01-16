@@ -122,6 +122,7 @@ $pre->bindValue(':updated', date(DATE_ATOM), PDO::PARAM_STR);
 
 // SQLの実行
 $r = $pre->execute();
+
 if (false === $r) {
         // XXX 本当はもう少し丁寧なエラーページを出力する
         echo 'システムでエラーが起きました';
@@ -130,3 +131,19 @@ if (false === $r) {
 
 // ダミーのOK：後で削除する
 echo 'OK';
+?>
+
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>DB講座中級</title>
+  <style type="text/css">
+    .error { color: red; }
+  </style>
+</head>
+
+<body>
+  入力いただきましてありがとうございました。
+</body>
+</html>
